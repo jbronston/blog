@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   
-  before_filter :authenticate, :except => [:index, :show]
+  before_filter :authenticate, :except => [:index, :show, :destroy, :update]
   
   # GET /posts
   # GET /posts.json
@@ -64,7 +64,10 @@ class PostsController < ApplicationController
     @post = Post.find(params[:id])
 
     respond_to do |format|
-      if @post.update_attributes(params[:post])
+      if params[:post][:author] != @post.author
+        format.html { redirect_to @post, notice: "Only #{@post.author} can edit." }
+        format.json { head :no_content }
+      elsif @post.update_attributes(params[:post])
         format.html { redirect_to @post, notice: 'Post was successfully updated.' }
         format.json { head :no_content }
       else

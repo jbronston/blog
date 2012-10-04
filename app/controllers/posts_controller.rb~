@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   
-  before_filter :authenticate, :except => [:index, :show]
+  before_filter :authenticate, :except => [:index, :show, :destroy, :update]
   
   # GET /posts
   # GET /posts.json
@@ -43,6 +43,7 @@ class PostsController < ApplicationController
 
   # POST /posts
   # POST /posts.json
+
   def create
     @post = Post.new(params[:post])
 
@@ -63,10 +64,17 @@ class PostsController < ApplicationController
     @post = Post.find(params[:id])
 
     respond_to do |format|
-      if @post.update_attributes(params[:post])
+      if params[:post][:author] != @post.author
+        # Error: redirect to post show page, but put error notice at top
+        format.html { redirect_to @post, notice: "UPDATE FAILED: The user cannot change. Must remain #{@post.author}." }
+        format.json { head :no_content }
+      elsif @post.update_attributes(params[:post])
+        # Success: redirect to post show page, displaying success notice at top
         format.html { redirect_to @post, notice: 'Post was successfully updated.' }
         format.json { head :no_content }
       else
+        # Failure... redisplay the edit page. This path is only hit in
+        # really abnormal cases, such as completely bogus input or db failure
         format.html { render action: "edit" }
         format.json { render json: @post.errors, status: :unprocessable_entity }
       end
