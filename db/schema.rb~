@@ -14,7 +14,6 @@
 ActiveRecord::Schema.define(:version => 20121004024334) do
 
   create_table "comments", :force => true do |t|
-    t.string   "commenter"
     t.integer  "post_id"
     t.text     "body"
     t.datetime "created_at", :null => false
@@ -22,7 +21,6 @@ ActiveRecord::Schema.define(:version => 20121004024334) do
   end
 
   create_table "posts", :force => true do |t|
-    t.string   "author"
     t.string   "title"
     t.text     "body"
     t.datetime "created_at", :null => false

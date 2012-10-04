@@ -3,6 +3,8 @@
 			Posted <%= time_ago_in_words(comment.created_at) %>
 		</strong>
 		<br />
-		<%= h(comment.body) %>
+		
+		<%= h(comment.body) %> <br />
+		<%= h(comment.commenter) %>
 	</p>
 <% end %>
